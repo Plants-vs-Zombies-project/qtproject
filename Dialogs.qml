@@ -8,8 +8,9 @@ import QtQuick.Dialogs
 
 ApplicationWindow{
     title: name
-    property alias dialog: _dialog
     id: _dialog
+    height: 800
+    width: 600
     ToolBar {
         anchors.top: parent.top
         anchors.right: parent.right
@@ -20,26 +21,51 @@ ApplicationWindow{
 
         }
     }
+
     ColumnLayout {
         anchors.bottom: parent.bottom
         spacing: 10
+        ListModel {id: messageModel}
+        Rectangle{
+            height: 700
+            width: 600
+            ListView {
+                id: messageList
+                width: parent.width
+                height: parent.height - inputRow.height
+                model: messageModel
+                delegate: Item {
+                        width: parent.width
+                        height: 20
+                        Text {
+                            text: model.timestamp+"      "+model.message
+                            wrapMode: Text.WordWrap
+                            width: parent.width - 20
+                            elide: Text.ElideRight
+                        }
 
-        ListView {
-            id: messageList
-            width: parent.width
-            height: parent.height - inputRow.height
-            model: messageModel
-            delegate: MessageDelegate {
-                width: messageList.width
+                        Image {
+                            source: model.type === "image" ? model.text : ""
+                            visible: model.type === "image"
+                            width: parent.width
+                            height: parent.width / 2
+                        }
 
-                // You can extend this delegate to handle different message types
-            }
-            clip: true
-            focus: false
-            orientation: ListView.Vertical
-            spacing: 5
-            highlight: Rectangle {
-                color: "lightblue"
+                        Text {
+                            text: model.type === "file" ? "文件路径：" + model.text : ""
+                            visible: model.type === "file"
+                        }
+                        TapHandler{
+                            onTapped: messageList.currentIndex = index
+                        }
+                    }
+                clip: true
+                focus: true
+                orientation: ListView.Vertical
+                spacing: 5
+                highlight: Rectangle {
+                    color: "lightblue"
+                }
             }
         }
 
@@ -50,11 +76,13 @@ ApplicationWindow{
 
             TextField {
                 id: inputField
-                width: parent.width - sendButton.width - 20
+                width: parent.width
                 placeholderText: "输入消息..."
+
+                //回车键也能发消息
                 onAccepted: {
                     if (inputField.text.trim() !== "") {
-                        messageModel.append({ text: inputField.text, type: "text" });
+                        messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
                         inputField.text = "";
                     }
                 }
@@ -62,16 +90,16 @@ ApplicationWindow{
 
             Button {
                 id: sendButton
-                text: "发送"
+                text: qsTr("send message")
                 onClicked: {
                     if (inputField.text.trim() !== "") {
-                        messageModel.append({ text: inputField.text, type: "text" });
+                        messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
                         inputField.text = "";
                     }
                 }
             }
             Button {
-                text: "发送图片"
+                text:  qsTr("send image")
                 onClicked: {
                     fileDialog1.open()
                 }
@@ -84,12 +112,12 @@ ApplicationWindow{
 
                 onAccepted: {
                     if (fileDialog1.fileUrl !== "") {
-                        messageModel.append({ text: fileDialog1-p.fileUrl.toString(), type: "image" });
+                        messageModel.append({ text: fileDialog1.fileUrl.toString(), type: "image" });
                     }
                 }
             }
             Button {
-                text: "发送文件"
+                text: qsTr("send file")
                 onClicked: {
                     fileDialog2.open()
                 }
@@ -107,8 +135,4 @@ ApplicationWindow{
 
         }//RowLayout
     }
-    ListModel {
-        id: messageModel
-    }
-
 }

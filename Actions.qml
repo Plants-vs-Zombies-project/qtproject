@@ -19,7 +19,7 @@ Item {
         id:_quit
         text: qsTr("&Quit")
         icon.name: "application-exit"
-        onTriggered: c;
+        onTriggered: Qt.quit();
     }
 
     Action {
@@ -35,6 +35,7 @@ Item {
     Action {
         id: _clear
         icon.name: "albumfolder-user-trash-symbolic"
+        //onTriggered: //清空消息记录
     }
 
 }

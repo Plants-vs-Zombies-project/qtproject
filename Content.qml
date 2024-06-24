@@ -4,15 +4,11 @@ import QtQuick.Dialogs
 import QtQuick.Controls  as QQC
 import QtMultimedia
 import QtQuick.Layouts
-import Friend
+
 //import "ipmsg.js" as Controller
 Item {
     property string name: _friendModel.name
     //property alias frend: _friendModel
-    Friend{
-        id:_friend
-    }
-
     // 定义一个模型来存储好友信息，这里使用一个简单的 ListModel
         ListModel {
             id: _friendModel
