@@ -36,4 +36,5 @@ Item {
         id: _clear
         icon.name: "albumfolder-user-trash-symbolic"
     }
+
 }

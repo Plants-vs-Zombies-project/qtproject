@@ -7,7 +7,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 ApplicationWindow{
-    title: "friendname"
+    title: name
     property alias dialog: _dialog
     id: _dialog
     ToolBar {

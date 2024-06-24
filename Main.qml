@@ -5,7 +5,6 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     property alias main:_main
-    property alias content: _content
     id:_main
     width: 340
     height: 480

@@ -28,8 +28,17 @@ qt_add_qml_module(
   main.cpp
   QML_FILES
   Main.qml
-  QML_FILES MessageDelegate.qml
-  QML_FILES Windows.qml)
+  QML_FILES
+  MessageDelegate.qml
+  QML_FILES
+  Windows.qml
+  SOURCES
+  SOURCES
+  SOURCES
+  SOURCES
+  SOURCES
+  SOURCES
+  SOURCES friend.h friend.cpp      )
 
 target_compile_features(appi PRIVATE cxx_std_20)
 
