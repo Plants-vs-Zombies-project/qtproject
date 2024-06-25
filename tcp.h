@@ -1,19 +1,23 @@
 #pragma once
 
 #include <QDebug>
+#include <QObject>
 #include <dirent.h>
 #include <errno.h>
+#include <fstream>
 #include <iostream>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 #define BUF_SIZE 1024
-class tcp
+class tcp : public QObject
 {
+    Q_OBJECT
 public:
-    tcp();
+    explicit tcp(QObject *parent = nullptr);
     void C(QString file_path);
     void S(QString file_path);
 
