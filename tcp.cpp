@@ -1,49 +1,49 @@
 #include "tcp.h"
 
-tcp::tcp()
+tcp::tcp(QObject* parent)
+    : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (!_socketfd) {
-        qDebug << "socket erorr";
+        std::cout << "socket erorr" << std::endl;
         perror("socket erorr");
         exit(1);
     }
-    memset(&sockAddr, 0, sizeof(sockAddr));
-    _addr.sin_family = PF_INET;
-    _addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    sockAddr.sin_port = htons(1234);
+    memset(&_addr, 0, sizeof(_addr));
+    _addr->sa_family = PF_INET;
+    // _addr->sa_addr.s_addr = inet_addr("127.0.0.1");
+    // _addr.sin_port = htons(1234);
     if (bind(_socketfd, _addr, _len)) {
-        qDebug << "bind erorr";
+        std::cout << "bind erorr" << std::endl;
         perror("bind erorr");
         exit(1);
     }
 
     if (listen(_socketfd, 6)) {
-        qDebug << "bind erorr";
         perror("bind erorr");
         exit(1);
     }
 
-    _socketfd2 = accept(_socketfd, _addr, _len);
-
-    recv(_socketfd2, _str, 255, 0);
+    _socketfd2 = accept(_socketfd, _addr, (socklen_t*) _len);
 }
 
 int tcp::filetype(QString file_path)
 {
-    //QString buf;
     struct stat buf;
     int result;
-    result = stat(file_path, &buf);
+    char* ch;
+    QByteArray ba = file_path.toLatin1();
+    ch = ba.data();
+    result = stat(ch, &buf);
     if (result == 0) {
-        qDebug << "stat error";
+        std::cout << "stat error" << std::endl;
         exit(1);
     }
     if (S_IFDIR & buf.st_mode) {
-        qDebug << "folder";
+        std::cout << "folder" << std::endl;
         return 1;
     } else if (S_IFREG & buf.st_mode) {
-        qDebug << "file";
+        std::cout << "file" << std::endl;
         return 0;
     }
 }
@@ -68,9 +68,12 @@ void tcp::foldertransmitC(QString file_path)
 {
     DIR* pD;
     struct dirent* ptr;
-    pD = opendir(file_path);
+    char* ch;
+    QByteArray ba = file_path.toLatin1();
+    ch = ba.data();
+    pD = opendir(ch);
     if (!pD) {
-        qDebug << "opendir error";
+        std::cout << "opendir error" << std::endl;
         exit(1);
     }
     while ((ptr = readdir(pD)) != 0) {
@@ -86,9 +89,12 @@ void tcp::foldertransmitC(QString file_path)
 void tcp::filetransmitC(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
-    FILE* fp = fopen(file_path, "rb");
+    char* ch;
+    QByteArray ba = file_path.toLatin1();
+    ch = ba.data();
+    FILE* fp = fopen(ch, "rb");
     if (fp == NULL) {
-        qDebug << "Can't open file";
+        std::cout << "Can't open file" << std::endl;
         exit(1);
     }
     int n = 1;
@@ -96,12 +102,12 @@ void tcp::filetransmitC(QString file_path)
         if (!feof(fp)) {
             memset(buf, 0, BUF_SIZE);
             fread(buf, 1, BUF_SIZE, fp);
-            qDebug << "filetransmitC is reading file data";
+            std::cout << "filetransmitC is reading file data" << std::endl;
             int i = send(_socketfd, buf, BUF_SIZE, 0);
-            if (i == SOCKET_ERROR) {
-                qDebug << "SOCKET_ERROR";
-                exit(1);
-            }
+            // if (i == SOCKET_ERROR) {
+            //     std::cout << "SOCKET_ERROR" << std::endl;
+            //     exit(1);
+            // }
 
         } else {
             n = 0;
@@ -109,17 +115,20 @@ void tcp::filetransmitC(QString file_path)
         }
     }
     std::cout << "filetransmitC  sucess" << std::endl;
-    close(fp);
+    //close(fp);
 }
 
 void tcp::foldertransmitS(QString file_path)
 {
-    mkdir(file_path, S_IRWXU || S_IRGRP || S_IROTH);
+    char* ch;
+    QByteArray ba = file_path.toLatin1();
+    ch = ba.data();
+    mkdir(ch, S_IRWXU | S_IRGRP | S_IROTH);
     DIR* pD;
     struct dirent* ptr;
-    pD = opendir(file_path);
+    pD = opendir(ch);
     if (!pD) {
-        qDebug << "opendir error";
+        std::cout << "opendir error" << std::endl;
         exit(1);
     }
     while ((ptr = readdir(pD)) != 0) {
@@ -135,23 +144,30 @@ void tcp::foldertransmitS(QString file_path)
 void tcp::filetransmitS(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
-    FILE* fp = fopen(file_path, "w");
+    char* ch;
+    QByteArray ba = file_path.toLatin1();
+    ch = ba.data();
+    FILE* fp = fopen(ch, "w");
     int n = 1;
     while (n) {
         memset(buf, 0, BUF_SIZE);
-        int i = recv(fp, buf, BUF_SIZE, 0);
+        int i = recv(_socketfd, buf, BUF_SIZE, 0);
+        std::fstream f;
+        f.open(ch, std::ios::in);
+        f << buf;
         if (i == 0) {
-            qDebug << "the network problem";
+            std::cout << "the network problem" << std::endl;
             n = 0;
             exit(1);
         }
-        if (i == SOCKET_ERROR) {
-            qDebug << "SOCKET_ERROR";
-            n = 0;
-            exit(1);
-        }
+
+        // if (i == SOCKET_ERROR) {
+        //     std::cout << "SOCKET_ERROR" << std::endl;
+        //     n = 0;
+        //     exit(1);
+        // }
         fwrite(buf, 1, BUF_SIZE, fp);
-        qDebug << "filetransmits is storing file data";
+        std::cout << "filetransmits is storing file data" << std::endl;
     }
     std::cout << "filetransmitS  sucess" << std::endl;
 }
