@@ -7,36 +7,26 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 ApplicationWindow{
-    title: name
     id: _dialog
-    height: 800
+    title: name
+    height: 700
     width: 600
-    ToolBar {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        RowLayout{
-            ToolButton{
-                action: actions.clear
-            }
-
-        }
-    }
-
     ColumnLayout {
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
         spacing: 10
-        ListModel {id: messageModel}
+        ListModel {id: _messageModel }
         Rectangle{
-            height: 700
-            width: 600
+            anchors.fill: parent
+            //color: ""
             ListView {
-                id: messageList
+                anchors.fill: parent
+                id: _messageList
                 width: parent.width
-                height: parent.height - inputRow.height
-                model: messageModel
+                height: parent.height - _inputRow.height
+                model: _messageModel
                 delegate: Item {
                         width: parent.width
-                        height: 20
+                        height:50
                         Text {
                             text: model.timestamp+"      "+model.message
                             wrapMode: Text.WordWrap
@@ -56,7 +46,7 @@ ApplicationWindow{
                             visible: model.type === "file"
                         }
                         TapHandler{
-                            onTapped: messageList.currentIndex = index
+                            onTapped: _messageList.currentIndex = index
                         }
                     }
                 clip: true
@@ -68,39 +58,44 @@ ApplicationWindow{
                 }
             }
         }
-
         RowLayout {
-            id: inputRow
+            anchors.bottom: parent.bottom
+            id: _inputRow
             width: parent.width
             spacing: 10
+            ScrollView {
+                width: 400
+                height: 100
+                TextField {
+                    id:inputField
+                    wrapMode: Text.Wrap
+                    width: parent.width
+                    placeholderText: qsTr("enter message")
 
-            TextField {
-                id: inputField
-                width: parent.width
-                placeholderText: "输入消息..."
-
-                //回车键也能发消息
-                onAccepted: {
-                    if (inputField.text.trim() !== "") {
-                        messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
-                        inputField.text = "";
+                    //回车键也能发消息
+                    onAccepted: {
+                        if (inputField.text.trim() !== "") {
+                            _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
+                            inputField.text = "";
+                        }
                     }
                 }
             }
+
 
             Button {
                 id: sendButton
-                text: qsTr("send message")
+                text: qsTr("sent message")
                 onClicked: {
                     if (inputField.text.trim() !== "") {
-                        messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
+                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
                         inputField.text = "";
                     }
                 }
             }
             Button {
-                text:  qsTr("send image")
-                onClicked: {
+                text:  qsTr("sent image")
+                onClicked: {_messageList
                     fileDialog1.open()
                 }
             }
@@ -112,12 +107,12 @@ ApplicationWindow{
 
                 onAccepted: {
                     if (fileDialog1.fileUrl !== "") {
-                        messageModel.append({ text: fileDialog1.fileUrl.toString(), type: "image" });
+                        _messageModel.append({timestamp: new Date().toLocaleTimeString() ,message:qsTr("image sent successfully"), type: "image" });
                     }
                 }
             }
             Button {
-                text: qsTr("send file")
+                text: qsTr("sent file")
                 onClicked: {
                     fileDialog2.open()
                 }
@@ -127,12 +122,19 @@ ApplicationWindow{
                 id: fileDialog2
                 onAccepted: {
                     if (fileDialog2.fileUrl !== "") {
-                        messageModel.append({ text: fileDialog2.fileUrl.toString(), type: "file" });
+                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:qsTr("file sent successfully"), type: "file" ,type:"message"});
+                        console.log(fileDialog2.fileUrls[0].toString);
                     }
                 }
             }
-
-
+            Button {
+                        text: "Clear List"
+                        onClicked: {
+                            // Clear the ListModel
+                             _messageModel.clear();
+                        }
+            }
         }//RowLayout
+
     }
 }

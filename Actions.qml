@@ -5,8 +5,6 @@ Item {
     property alias about: _about
     property alias quit: _quit
     property alias setting: _setting
-    property alias clear: _clear
-    //property alias friend: _friend
     Action {
         id:_open
         text: qsTr("&Open...")
@@ -32,10 +30,4 @@ Item {
         text: qsTr("&Sting")
         icon.name: "systemsettings"
     }
-    Action {
-        id: _clear
-        icon.name: "albumfolder-user-trash-symbolic"
-        //onTriggered: //清空消息记录
-    }
-
 }

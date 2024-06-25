@@ -2,9 +2,10 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
+import "ipmsg.js"  as Controller
 ApplicationWindow {
     property alias main:_main
+    property alias content:_content
     id:_main
     width: 340
     height: 480
@@ -47,9 +48,7 @@ ApplicationWindow {
         id:_content
         height: 400
         width: parent.width
-        }
+
     }
-
-    //Content Area
-
+}
 

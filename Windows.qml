@@ -1,8 +1,9 @@
-//seeting窗口
+//设置窗口
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import "ipmsg.js"  as Controller
 ApplicationWindow {
-    //property alias setting: _setting
+    id:_setting
     width: 330
     height: 380
     title: "Seting-About"
@@ -35,8 +36,14 @@ ApplicationWindow {
                                    color: "white"
                                }
                                TextField{
+                                   id:_inputname
                                    width: 100
-                                   placeholderText: "enter your name"
+                                   placeholderText: "press EnterKey to save"
+                                   onAccepted: {
+                                       var name=_inputname.text;
+                                       Controller.setName(name);
+                                       _inputname.text="";
+                                   }
                                }
                             }
                         }
@@ -50,8 +57,10 @@ ApplicationWindow {
                                    color: "white"
                                }
                                TextField{
+                                   id:_inputip
                                    width: 100
-                                   placeholderText: "enter your ip"
+                                   placeholderText: "press EnterKey to save"
+                                   onAccepted: {_inputip.text="";}
                                }
                             }
                         }
@@ -65,12 +74,24 @@ ApplicationWindow {
                                }
                                RadioButton {
                                                text: "Online"
+                                               onClicked: {
+                                                   var status=text;
+                                                   Controller.setStatus(status)
+                                               }
                                }
                                RadioButton {
                                                text: "Away"
+                                               onClicked: {
+                                                   var status=text;
+                                                   Controller.setStatus(status)
+                                               }
                                }
                                RadioButton {
                                                text: "Offline"
+                                               onClicked: {
+                                                   var status=text;
+                                                   Controller.setStatus(status)
+                                               }
                                }
                             }
                         }

@@ -1,6 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <friend.h>
+
+//#include <friend.h>
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
@@ -13,7 +16,9 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    qmlRegisterType<Friend>("Friend", 1, 0, "Friend");
+
+    //qmlRegisterType<Friend>("Friend", 1, 0, "Friend");
+
     engine.load(url);
 
     return app.exec();
