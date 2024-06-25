@@ -11,24 +11,10 @@ ApplicationWindow {
     height: 480
     visible: true
     title: qsTr("ipmsg")
-    menuBar: MenuBar {
-
-        Menu {
-            title: qsTr("File")
-            MenuItem { action: actions.open }
-            MenuItem { action: actions.quit }
-
-        }
-        Menu {
-            title: qsTr("Setting")
-            MenuItem { action: actions.setting }
-        }
-    }
-
      ToolBar {
         anchors.bottom: parent.bottom
         RowLayout{
-            ToolButton{ action: {actions.open} }
+            ToolButton{ action: actions.setting }
             ToolButton{ action: actions.quit }
         }
     }
