@@ -1,0 +1,1 @@
+/usr/bin/clang++ -DQT_QML_DEBUG -g CMakeFiles/udpServer.dir/udpServer_autogen/mocs_compilation.cpp.o CMakeFiles/udpServer.dir/main.cpp.o CMakeFiles/udpServer.dir/Server.cpp.o CMakeFiles/udpServer.dir/udpclient.cpp.o -o udpServer  -Wl,-rpath,/opt/Qt/6.7.1/gcc_64/lib: /opt/Qt/6.7.1/gcc_64/lib/libQt6Core.so.6.7.1
