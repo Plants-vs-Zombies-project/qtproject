@@ -29,7 +29,6 @@ qt_add_qml_module(
   QML_FILES
   Main.qml
   QML_FILES
-
   QML_FILES
   Windows.qml
   SOURCES
@@ -38,9 +37,11 @@ qt_add_qml_module(
   SOURCES
   SOURCES
   SOURCES
-  SOURCES friend.h friend.cpp
-  QML_FILES ipmsg.js
-  QML_FILES       )
+  SOURCES
+  friend.h
+  friend.cpp
+  QML_FILES
+  QML_FILES i.js)
 
 target_compile_features(appi PRIVATE cxx_std_20)
 

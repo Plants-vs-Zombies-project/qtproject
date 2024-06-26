@@ -5,12 +5,22 @@ import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-
+import "i.js"  as Controller
 ApplicationWindow{
     id: _dialog
     title: name
     height: 700
     width: 600
+    Popup{
+        id:_popimage
+        width: 400
+        height: 400
+        contentItem: Image{
+            id:_popI
+            anchors.centerIn: parent
+            fillMode: Image.PreserveAspectFit
+        }
+    }
     ColumnLayout {
         anchors.fill: parent
         spacing: 10
@@ -24,25 +34,29 @@ ApplicationWindow{
                 width: parent.width
                 height: parent.height - _inputRow.height
                 model: _messageModel
-                delegate: Item {
+                delegate: Row {
                         width: parent.width
-                        height:50
+                        height:100
                         Text {
+                            width: parent.width-100
+                            id:_text
                             text: model.timestamp+"      "+model.message
                             wrapMode: Text.WordWrap
-                            width: parent.width - 20
                             elide: Text.ElideRight
                         }
-
                         Image {
+                            id:_image
                             source: model.type === "image" ? model.text : ""
                             visible: model.type === "image"
-                            width: parent.width
-                            height: parent.width / 2
+                            width: 100
+                            height: width
+                            fillMode: _image.PreserveAspectCrop
+                            TapHandler{
+                                onTapped: _popimage.open()
+                            }
                         }
-
                         Text {
-                            text: model.type === "file" ? "文件路径：" + model.text : ""
+                            //text: model.type === "file" ? model.message : ""
                             visible: model.type === "file"
                         }
                         TapHandler{
@@ -75,7 +89,7 @@ ApplicationWindow{
                     //回车键也能发消息
                     onAccepted: {
                         if (inputField.text.trim() !== "") {
-                            _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
+                            _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "message" });
                             inputField.text = "";
                         }
                     }
@@ -88,7 +102,7 @@ ApplicationWindow{
                 text: qsTr("sent message")
                 onClicked: {
                     if (inputField.text.trim() !== "") {
-                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "text" });
+                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "message" });
                         inputField.text = "";
                     }
                 }
@@ -106,8 +120,11 @@ ApplicationWindow{
                 nameFilters: ["Images (*.png *.jpg)", "All files (*)"]
 
                 onAccepted: {
-                    if (fileDialog1.fileUrl !== "") {
-                        _messageModel.append({timestamp: new Date().toLocaleTimeString() ,message:qsTr("image sent successfully"), type: "image" });
+                    var url=fileDialog1.selectedFile;
+                    var source=url.toString();
+                    Controller.setSource(source);
+                    if (url !== ""&& url !== undefined) {
+                        _messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:url.toString(),message:url.toString().split("/").pop(), type: "image" });
                     }
                 }
             }
@@ -121,9 +138,9 @@ ApplicationWindow{
             FileDialog {
                 id: fileDialog2
                 onAccepted: {
-                    if (fileDialog2.fileUrl !== "") {
-                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:qsTr("file sent successfully"), type: "file" ,type:"message"});
-                        console.log(fileDialog2.fileUrls[0].toString);
+                    var url=fileDialog2.selectedFile
+                    if (url !== ""&& url !== undefined) {
+                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:url.toString().split("/").pop(), type: "file" });
                     }
                 }
             }

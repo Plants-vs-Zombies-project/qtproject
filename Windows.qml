@@ -1,7 +1,7 @@
 //设置窗口
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import "ipmsg.js"  as Controller
+import "i.js"  as Controller
 ApplicationWindow {
     id:_setting
     width: 330
