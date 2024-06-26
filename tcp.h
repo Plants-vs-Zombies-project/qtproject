@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QObject>
+#include <arpa/inet.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fstream>
@@ -13,13 +14,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 #define BUF_SIZE 1024
+#define PORT 8888
+#define MaxClient 20
 class tcp : public QObject
 {
     Q_OBJECT
 public:
     explicit tcp(QObject *parent = nullptr);
-    void C(QString file_path);
-    void S(QString file_path);
+public slots:
+    Q_INVOKABLE void C(QString file_path);
+    Q_INVOKABLE void S(QString file_path);
 
 private:
     int filetype(QString file_path);
@@ -31,8 +35,9 @@ private:
     void switchflag(QString file_path);
 
     int _socketfd;
-    sockaddr *_addr;
+    sockaddr_in *_addr;
     socklen_t _len;
     int _socketfd2;
     int _flag;
+    sockaddr_in *addrs;
 };
