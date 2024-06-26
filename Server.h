@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /*#pragma once
 =======
 #pragma once

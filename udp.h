@@ -1,7 +1,7 @@
 //本机之间发送信息和发送图片
 #pragma once
 #include <QObject>
-#include <QPixmap>
+//#include <QPixmap>
 #include <QtNetwork/QUdpSocket>
 class UDP : public QObject
 {
@@ -12,16 +12,18 @@ public:
 
     void sendMessage(const QString &message);
     void sendImage(const QByteArray &imageData);
-
+    bool isJPEG(const char *data, int size);
+    bool isPNG(const char *data, int size);
+    bool isTextMessage(const char *data, int size);
 signals:
-    void messageReceived(const QString &message, const QString &senderip, quint16 senderport);
-    void imageRecevied();
+    void messageReceived(const QString &message);
+    void imageRecevied(const QByteArray &imageData);
 
-public slots:
-    void saveImage(const QPixmap &image, const QString &filePath);
 private slots:
+    //接受UDP数据
     void processPendingDatagrams();
 
 private:
     int sockfd;
+    void saveImage(const QString &filePath, const QByteArray &imageData);
 };
