@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+/*#pragma once
+=======
 #pragma once
+>>>>>>> refs/remotes/iptuxgit/udp
 #include <QHostAddress>
 #include <QMap>
 #include <QObject>
@@ -18,7 +22,11 @@ signals:
     void clientConnected(const QString &clientAddress);
     void clientDisconnected(const QString &clientAddress);
 
+<<<<<<< HEAD
+    private slots:
+=======
 private slots:
+>>>>>>> refs/remotes/iptuxgit/udp
     void handleClientLeft(const QString &clientAddress);
 
 private:
@@ -29,3 +37,7 @@ private:
     QMap<QString, QHostAddress>
         clients; //restore estabilished client's ip Address and QHostAddress of object
 };
+<<<<<<< HEAD
+*/
+=======
+>>>>>>> refs/remotes/iptuxgit/udp
