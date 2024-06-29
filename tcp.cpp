@@ -9,24 +9,13 @@ tcp::tcp(QObject* parent)
         perror("socket erorr");
         exit(1);
     }
+    memset(&addrs, 0, sizeof(addrs));
     memset(&_addr, 0, sizeof(_addr));
-    _addr->sa_family = PF_INET;
-    // _addr->sa_addr.s_addr = inet_addr("127.0.0.1");
-    // _addr.sin_port = htons(1234);
-    if (bind(_socketfd, _addr, _len)) {
-        std::cout << "bind erorr" << std::endl;
-        perror("bind erorr");
-        exit(1);
-    }
-
-    if (listen(_socketfd, 6)) {
-        perror("bind erorr");
-        exit(1);
-    }
-
-    _socketfd2 = accept(_socketfd, _addr, (socklen_t*) _len);
+    _addr->sin_family = PF_INET;
+    _addr->sin_addr.s_addr = inet_addr("127.0.0.1");
+    _addr->sin_port = htons(PORT);
 }
-
+//判断传输的是文件还是目录
 int tcp::filetype(QString file_path)
 {
     struct stat buf;
@@ -36,18 +25,19 @@ int tcp::filetype(QString file_path)
     ch = ba.data();
     result = stat(ch, &buf);
     if (result == 0) {
-        std::cout << "stat error" << std::endl;
+        qDebug() << "stat error";
         exit(1);
     }
     if (S_IFDIR & buf.st_mode) {
-        std::cout << "folder" << std::endl;
+        qDebug() << "folder";
         return 1;
     } else if (S_IFREG & buf.st_mode) {
-        std::cout << "file" << std::endl;
+        qDebug() << "file";
         return 0;
     }
+    return 1;
 }
-
+//
 int tcp::switchfile(QString file_path)
 {
     int file_type;
@@ -60,10 +50,10 @@ int tcp::switchfile(QString file_path)
         _flag = 2;
         break;
     default:
-        std::cout << "file type error" << std::endl;
+        qDebug() << "file type error";
     }
 }
-//未完成自定义文件路径的传输
+//文件目录发送
 void tcp::foldertransmitC(QString file_path)
 {
     DIR* pD;
@@ -73,7 +63,7 @@ void tcp::foldertransmitC(QString file_path)
     ch = ba.data();
     pD = opendir(ch);
     if (!pD) {
-        std::cout << "opendir error" << std::endl;
+        qDebug() << "opendir error";
         exit(1);
     }
     while ((ptr = readdir(pD)) != 0) {
@@ -81,11 +71,11 @@ void tcp::foldertransmitC(QString file_path)
             continue;
         filetransmitC(file_path + "/" + ptr->d_name);
     }
-    std::cout << "foldertransmitC  sucess" << std::endl;
+    qDebug() << "foldertransmitC  sucess";
     return;
 }
 
-//未完成文件类型与文件名的传输
+//文件发送
 void tcp::filetransmitC(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
@@ -104,20 +94,15 @@ void tcp::filetransmitC(QString file_path)
             fread(buf, 1, BUF_SIZE, fp);
             std::cout << "filetransmitC is reading file data" << std::endl;
             int i = send(_socketfd, buf, BUF_SIZE, 0);
-            // if (i == SOCKET_ERROR) {
-            //     std::cout << "SOCKET_ERROR" << std::endl;
-            //     exit(1);
-            // }
 
         } else {
             n = 0;
             break;
         }
     }
-    std::cout << "filetransmitC  sucess" << std::endl;
-    //close(fp);
+    qDebug() << "filetransmitC  sucess";
 }
-
+//文件目录接收
 void tcp::foldertransmitS(QString file_path)
 {
     char* ch;
@@ -128,7 +113,7 @@ void tcp::foldertransmitS(QString file_path)
     struct dirent* ptr;
     pD = opendir(ch);
     if (!pD) {
-        std::cout << "opendir error" << std::endl;
+        qDebug() << "opendir error";
         exit(1);
     }
     while ((ptr = readdir(pD)) != 0) {
@@ -136,11 +121,11 @@ void tcp::foldertransmitS(QString file_path)
             continue;
         filetransmitS(file_path + "/" + ptr->d_name);
     }
-    std::cout << "foldertransmitS  sucess" << std::endl;
+    qDebug() << "foldertransmitS  sucess";
     return;
 }
 
-//未完成文件类型与文件名的传输
+//文件接收
 void tcp::filetransmitS(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
@@ -156,24 +141,20 @@ void tcp::filetransmitS(QString file_path)
         f.open(ch, std::ios::in);
         f << buf;
         if (i == 0) {
-            std::cout << "the network problem" << std::endl;
+            qDebug() << "the network problem";
             n = 0;
             exit(1);
         }
 
-        // if (i == SOCKET_ERROR) {
-        //     std::cout << "SOCKET_ERROR" << std::endl;
-        //     n = 0;
-        //     exit(1);
-        // }
         fwrite(buf, 1, BUF_SIZE, fp);
-        std::cout << "filetransmits is storing file data" << std::endl;
+        qDebug() << "filetransmits is storing file data";
     }
-    std::cout << "filetransmitS  sucess" << std::endl;
+    qDebug() << "filetransmitS  sucess";
 }
-
+//客户端发送
 void tcp::C(QString file_path)
 {
+    ::connect(_socketfd, (struct sockaddr*) addrs, sizeof(addrs));
     switchfile(file_path);
     if (_flag == 1) {
         foldertransmitC(file_path);
@@ -182,9 +163,20 @@ void tcp::C(QString file_path)
         filetransmitC(file_path);
     }
 }
-
+//服务端接收
 void tcp::S(QString file_path)
 {
+    if (bind(_socketfd, (struct sockaddr*) _addr, (socklen_t) _len)) {
+        qDebug() << "bind error";
+        exit(1);
+    }
+
+    if (listen(_socketfd, MaxClient)) {
+        qDebug() << "bind error";
+        exit(1);
+    }
+
+    _socketfd2 = accept((int) _socketfd, (struct sockaddr*) addrs, (socklen_t*) sizeof(addrs));
     switchfile(file_path);
     if (_flag == 1) {
         foldertransmitS(file_path);
