@@ -21,6 +21,8 @@ qt_add_qml_module(appiptux
     SOURCES
     SOURCES
     SOURCES tcp.h tcp.cpp
+    SOURCES tcpserver.h tcpserver.cpp
+    SOURCES tcpclient.h tcpclient.cpp
 )
 
 target_compile_features(appiptux PRIVATE cxx_std_20)
