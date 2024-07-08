@@ -23,15 +23,15 @@ class tcpSeverer : public QObject
 public:
     explicit tcpSeverer(QString file_path, QObject *parent = nullptr);
     //不同类型的文件传输
+public slots:
     Q_INVOKABLE void foldertransmitS(QString file_path); //文件夹类型接收
     Q_INVOKABLE void filetransmitS(QString file_path);   //文件类型接收
+    //判断传输文件的类型的函数
+    Q_INVOKABLE int filetype(QString file_path);
+    Q_INVOKABLE int switchfile(QString file_path);
+    Q_INVOKABLE void switchflag(QString file_path);
 
 private:
-    //判断传输文件的类型的函数
-    int filetype(QString file_path);
-    int switchfile(QString file_path);
-    void switchflag(QString file_path);
-
     int _socketfd;
     sockaddr_in *_addr;
     socklen_t _len;
