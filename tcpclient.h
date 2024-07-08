@@ -21,7 +21,7 @@ class tcpClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit tcpClient(QString file_path);
+    explicit tcpClient(QString file_path, QObject *parent = nullptr);
     //不同文件传输类型的函数
     Q_INVOKABLE void foldertransmitC(QString file_path); //文件夹类型发送
     Q_INVOKABLE void filetransmitC(QString file_path);   //文件类型发送
