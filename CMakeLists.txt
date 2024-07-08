@@ -38,7 +38,8 @@ qt_add_qml_module(
   SOURCES
   udpServer.h
   SOURCES
-  tcpserver.cpp)
+  tcpserver.cpp
+  RESOURCES CAE9E97E750CA847E9AF123813C01359.jpg)
 
 set_target_properties(
   appI

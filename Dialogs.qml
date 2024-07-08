@@ -18,7 +18,9 @@ ApplicationWindow{
         onMessageReceived: {_messageModel.append({ timestamp: new Date().toLocaleTimeString(),"message": message })}
         onImageReceived: {_messageModel.append({timestamp: new Date().toLocaleTimeString(),"image":imageData})}
     }
-
+    /*Tcpclient{
+        id:_tcpC
+    }*/
     //查看图片的弹窗
     Popup{
         id:_popimage
@@ -137,6 +139,7 @@ ApplicationWindow{
                     Controller.setSource(source);
                     if (url !== ""&& url !== undefined) {
                         _messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:url.toString(),message:url.toString().split("/").pop(), type: "image" });
+                        _udpS.sendMessage(url.toString().split("/").pop());
                         _udpS.sendImage(url.toString());
                     }
                 }
@@ -154,6 +157,7 @@ ApplicationWindow{
                     var url=fileDialog2.selectedFile
                     if (url !== ""&& url !== undefined) {
                         _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:url.toString().split("/").pop(), type: "file" });
+                        _udpS.sendMessage(url.toString().split("/").pop());
                     }
                 }
             }

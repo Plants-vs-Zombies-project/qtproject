@@ -10,7 +10,7 @@ ApplicationWindow {
     width: 340
     height: 480
     visible: true
-    title: qsTr("ipmsg")
+    title: qsTr("Server")
      ToolBar {
         anchors.bottom: parent.bottom
         RowLayout{
