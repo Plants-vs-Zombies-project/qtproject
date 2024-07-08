@@ -23,15 +23,16 @@ class tcpClient : public QObject
 public:
     explicit tcpClient(QString file_path, QObject *parent = nullptr);
     //不同文件传输类型的函数
+public slots:
     Q_INVOKABLE void foldertransmitC(QString file_path); //文件夹类型发送
     Q_INVOKABLE void filetransmitC(QString file_path);   //文件类型发送
 
-private:
     //判断传输文件的类型的函数
-    int filetype(QString file_path);
-    int switchfile(QString file_path);
-    void switchflag(QString file_path);
+    Q_INVOKABLE int filetype(QString file_path);
+    Q_INVOKABLE int switchfile(QString file_path);
+    Q_INVOKABLE void switchflag(QString file_path);
 
+private:
     int _socketfd;
     sockaddr_in *_addr;
     socklen_t _len;
