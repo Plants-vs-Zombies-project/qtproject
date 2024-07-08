@@ -1,6 +1,6 @@
 #include "tcpclient.h"
 
-tcpClient::tcpClient(QString file_path, QObject *parent = nullptr)
+tcpClient::tcpClient(QString file_path, QObject *parent)
     : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
