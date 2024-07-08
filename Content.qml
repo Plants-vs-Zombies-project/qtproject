@@ -1,3 +1,5 @@
+//好友对话窗口
+//发消息和传输文件的窗口
 import QtQuick
 import Qt.labs.folderlistmodel
 import QtQuick.Dialogs
@@ -44,9 +46,6 @@ Item {
                         } else {
                             console.log("Error loading component:", component.errorString());
                         }
-
-                        console.log("Clicked on " + model.name);
-                        // 在此处添加处理点击列表项的逻辑
                     }
                 }
             }

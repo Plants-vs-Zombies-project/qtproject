@@ -1,6 +1,7 @@
 #include "tcpclient.h"
 
-tcpClient::tcpClient(QString file_path)
+tcpClient::tcpClient(QString file_path, QObject *parent)
+    : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (!_socketfd) {
@@ -15,13 +16,13 @@ tcpClient::tcpClient(QString file_path)
     _addr->sin_port = htons(PORT);
 
     ::connect(_socketfd, (struct sockaddr *) addrs, sizeof(addrs));
-    /*switchfile(file_path);
+    switchfile(file_path);
     if (_flag == 1) {
         foldertransmitC(file_path);
     }
     if (_flag == 2) {
         filetransmitC(file_path);
-    }*/
+    }
 }
 
 void tcpClient::foldertransmitC(QString file_path)
@@ -109,3 +110,5 @@ int tcpClient::switchfile(QString file_path)
         qDebug() << "file type error";
     }
 }
+
+void tcpClient::switchflag(QString file_path) {}

@@ -15,12 +15,13 @@ ApplicationWindow{
     width: 600
     Udpclient{
         id:_udpC
-        onMessageReceived: {_messageModel.append({ timestamp: new Date().toLocaleTimeString(),"message": message })}
-        onImageReceived: {_messageModel.append({timestamp: new Date().toLocaleTimeString(),"image":imageData})}
+        onMessageReceived: {_messageModel.append({ timestamp: new Date().toLocaleTimeString() ,"message": message })}
+        onImageReceived: {_messageModel.append({timestamp: new Date().toLocaleTimeString() ,"image":imageData})}
     }
     /*Tcpclient{
         id:_tcpC
     }*/
+
 
     //查看图片的弹窗
     Popup{
@@ -40,7 +41,6 @@ ApplicationWindow{
         ListModel {id: _messageModel; }
         Rectangle{
             anchors.fill: parent
-            //color: ""
             ListView {
                 anchors.fill: parent
                 id: _messageList
@@ -63,7 +63,7 @@ ApplicationWindow{
                             visible: model.type === "image"
                             width: 60
                             height: 100
-                            fillMode: _image.PreserveAspectFit
+                            //fillMode: _image.PreserveAspectFit
                             TapHandler{
                                 onTapped: _popimage.open()
                             }
@@ -111,7 +111,6 @@ ApplicationWindow{
                 }
             }
 
-
             Button {
                 id: sendButton
                 text: qsTr("sent message")
@@ -141,7 +140,7 @@ ApplicationWindow{
                     Controller.setSource(source);
                     if (url !== ""&& url !== undefined) {
                         _messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:url.toString(),message:url.toString().split("/").pop(), type: "image" });
-                        _udpC.sendImage(url.toString().split("/").pop());
+                        _udpC.sendImage(url);
                         _udpC.sendMessage(url.toString().split("/").pop());
                     }
                 }
@@ -159,7 +158,8 @@ ApplicationWindow{
                     var url=fileDialog2.selectedFile
                     if (url !== ""&& url !== undefined) {
                         _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:url.toString().split("/").pop(), type: "file" });
-                       // _tcpC.filetransmitC(url.toString());
+                        _udpC.sendMessage(url.toString().split("/").pop());
+                        //_tcpC.filetransmitC(url.toString());
                         //_tcpC.foldertransmitC(url.toString());
                     }
                 }
