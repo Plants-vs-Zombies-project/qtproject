@@ -33,11 +33,12 @@ qt_add_qml_module(
   SOURCES
   tcpserver.h
   SOURCES
-  tcpserver.cpp
   SOURCES
   udpServer.cpp
   SOURCES
-  udpServer.h)
+  udpServer.h
+  SOURCES
+  tcpserver.cpp)
 
 set_target_properties(
   appI
