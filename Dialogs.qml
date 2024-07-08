@@ -5,7 +5,7 @@ import QtCore
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-//import tcpsever 1.0
+import tcpclient 1.0
 import udpclient 1.0
 import "i.js"  as Controller
 ApplicationWindow{
@@ -18,6 +18,9 @@ ApplicationWindow{
         onMessageReceived: {_messageModel.append({ timestamp: new Date().toLocaleTimeString(),"message": message })}
         onImageReceived: {_messageModel.append({timestamp: new Date().toLocaleTimeString(),"image":imageData})}
     }
+    /*Tcpclient{
+        id:_tcpC
+    }*/
 
     //查看图片的弹窗
     Popup{
@@ -60,7 +63,7 @@ ApplicationWindow{
                             visible: model.type === "image"
                             width: 60
                             height: 100
-                            //fillMode: _image.PreserveAspectFit
+                            fillMode: _image.PreserveAspectFit
                             TapHandler{
                                 onTapped: _popimage.open()
                             }
@@ -138,7 +141,8 @@ ApplicationWindow{
                     Controller.setSource(source);
                     if (url !== ""&& url !== undefined) {
                         _messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:url.toString(),message:url.toString().split("/").pop(), type: "image" });
-                        _udpC.sendImage(url.toString());
+                        _udpC.sendImage(url.toString().split("/").pop());
+                        _udpC.sendMessage(url.toString().split("/").pop());
                     }
                 }
             }
@@ -155,6 +159,8 @@ ApplicationWindow{
                     var url=fileDialog2.selectedFile
                     if (url !== ""&& url !== undefined) {
                         _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:url.toString().split("/").pop(), type: "file" });
+                       // _tcpC.filetransmitC(url.toString());
+                        //_tcpC.foldertransmitC(url.toString());
                     }
                 }
             }
