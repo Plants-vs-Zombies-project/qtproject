@@ -1,6 +1,7 @@
 #include "tcpserver.h"
 
-tcpSeverer::tcpSeverer(QString file_path)
+tcpSeverer::tcpSeverer(QString file_path, QObject *parent = nullptr)
+    : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (!_socketfd) {
