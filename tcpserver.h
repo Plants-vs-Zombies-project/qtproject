@@ -23,8 +23,8 @@ class tcpSeverer : public QObject
 public:
     explicit tcpSeverer(QString file_path, QObject *parent = nullptr);
     //不同类型的文件传输
-    void foldertransmitS(QString file_path); //文件夹类型接收
-    void filetransmitS(QString file_path);   //文件类型接收
+    Q_INVOKABLE void foldertransmitS(QString file_path); //文件夹类型接收
+    Q_INVOKABLE void filetransmitS(QString file_path);   //文件类型接收
 
 private:
     //判断传输文件的类型的函数
