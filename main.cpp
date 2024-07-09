@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 
-    qmlRegisterType<tcpSeverer>("tcpsever", 1, 0, "Tcpsever");
+    qmlRegisterType<TcpSeverer>("tcpsever", 1, 0, "Tcpsever");
     qmlRegisterType<Server>("udpsever", 1, 0, "Udpserver");
 
     engine.load(url);
