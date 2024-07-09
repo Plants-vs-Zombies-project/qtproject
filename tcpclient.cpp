@@ -1,6 +1,6 @@
 #include "tcpclient.h"
 //建立连接
-tcpClient::tcpClient(QObject *parent)
+TcpClient::TcpClient(QObject *parent)
     : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -18,7 +18,7 @@ tcpClient::tcpClient(QObject *parent)
     ::connect(_socketfd, (struct sockaddr *) addrs, sizeof(addrs));
 }
 //文件夹传输
-void tcpClient::foldertransmitC(QString file_path)
+void TcpClient::foldertransmitC(QString file_path)
 {
     DIR *pD;
     struct dirent *ptr;
@@ -39,7 +39,7 @@ void tcpClient::foldertransmitC(QString file_path)
     return;
 }
 //文件传输
-void tcpClient::filetransmitC(QString file_path)
+void TcpClient::filetransmitC(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
     char *ch;
@@ -66,7 +66,7 @@ void tcpClient::filetransmitC(QString file_path)
     qDebug() << "filetransmitC  sucess";
 }
 //判断文件类型
-int tcpClient::filetype(QString file_path)
+int TcpClient::filetype(QString file_path)
 {
     struct stat buf;
     int result;
@@ -88,7 +88,7 @@ int tcpClient::filetype(QString file_path)
     return 1;
 }
 //置flag,如文件夹则置1，文件则2
-int tcpClient::switchfile(QString file_path)
+int TcpClient::switchfile(QString file_path)
 {
     int file_type;
     file_type = filetype(file_path);
@@ -102,9 +102,10 @@ int tcpClient::switchfile(QString file_path)
     default:
         qDebug() << "file type error";
     }
+    return 0;
 }
 //获得文件类型后决定使用哪个类型函数
-void tcpClient::switchflag(QString file_path)
+void TcpClient::switchflag(QString file_path)
 {
     switchfile(file_path);
     if (_flag == 1) {

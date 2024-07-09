@@ -1,6 +1,6 @@
 #include "tcpserver.h"
 //初始化
-tcpSeverer::tcpSeverer(QObject *parent)
+TcpSeverer::TcpSeverer(QObject *parent)
     : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -28,7 +28,7 @@ tcpSeverer::tcpSeverer(QObject *parent)
     _socketfd2 = accept((int) _socketfd, (struct sockaddr *) addrs, (socklen_t *) sizeof(addrs));
 }
 //文件夹接收
-void tcpSeverer::foldertransmitS(QString file_path)
+void TcpSeverer::foldertransmitS(QString file_path)
 {
     char *ch;
     QByteArray ba = file_path.toLatin1();
@@ -50,7 +50,7 @@ void tcpSeverer::foldertransmitS(QString file_path)
     return;
 }
 //文件接收
-void tcpSeverer::filetransmitS(QString file_path)
+void TcpSeverer::filetransmitS(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
     char *ch;
@@ -76,7 +76,7 @@ void tcpSeverer::filetransmitS(QString file_path)
     qDebug() << "filetransmitS  sucess";
 }
 //判断文件类型
-int tcpSeverer::filetype(QString file_path)
+int TcpSeverer::filetype(QString file_path)
 {
     struct stat buf;
     int result;
@@ -98,7 +98,7 @@ int tcpSeverer::filetype(QString file_path)
     return 1;
 }
 // 置flag, 如文件夹则置1，文件则2
-int tcpSeverer::switchfile(QString file_path)
+int TcpSeverer::switchfile(QString file_path)
 {
     int file_type;
     file_type = filetype(file_path);
@@ -115,7 +115,7 @@ int tcpSeverer::switchfile(QString file_path)
     return 0;
 }
 //获得文件类型后决定使用哪个类型函数
-void tcpSeverer::switchflag(QString file_path)
+void TcpSeverer::switchflag(QString file_path)
 {
     //判断传输为文件还是文件夹
     switchfile(file_path);
