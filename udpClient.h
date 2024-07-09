@@ -23,4 +23,5 @@ signals:
 
 private:
     QUdpSocket *udpSocket;
+    QString m_name;
 };

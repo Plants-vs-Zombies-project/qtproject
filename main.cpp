@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 
-    qmlRegisterType<tcpClient>("tcpclient", 1, 0, "Tcpclient");
+    qmlRegisterType<TcpClient>("tcpclient", 1, 0, "Tcpclient");
     qmlRegisterType<Client>("udpclient", 1, 0, "Udpclient");
 
     engine.load(url);

@@ -15,8 +15,8 @@ ApplicationWindow{
     width: 600
     Udpclient{
         id:_udpC
-        onMessageReceived: {_messageModel.append({ timestamp: new Date().toLocaleTimeString() ,"message": message })}
-        onImageReceived: {_messageModel.append({timestamp: new Date().toLocaleTimeString() ,"image":imageData})}
+        onMessageReceived: {_messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:message,type:"message"})}
+        onImageReceived: {_messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:imageData.toBase64(),type:"image"})}
     }
     /*Tcpclient{
         id:_tcpC
@@ -53,7 +53,7 @@ ApplicationWindow{
                         Text {
                             width: parent.width-100
                             id:_text
-                            text: model.timestamp+"      "+Controller.getName()+":      "+model.message
+                            text: model.timestamp+"      "+model.message
                             wrapMode: Text.WordWrap
                             elide: Text.ElideRight
                         }
@@ -103,8 +103,8 @@ ApplicationWindow{
                     //回车键也能发消息
                     onAccepted: {
                         if (inputField.text.trim() !== "") {
-                            _messageModel.append({ timestamp: new Date().toLocaleTimeString(),message: inputField.text, type: "message" });
-                            _udpC.sendMessage(inputField.text);
+                            _messageModel.append({ timestamp: new Date().toLocaleTimeString(),message:Controller.getName()+":"+inputField.text, type: "message" });
+                            _udpC.sendMessage(Controller.getName()+":"+inputField.text);
                             inputField.text = "";
                         }
                     }
@@ -116,8 +116,8 @@ ApplicationWindow{
                 text: qsTr("sent message")
                 onClicked: {
                     if (inputField.text.trim() !== "") {
-                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: inputField.text, type: "message" });
-                        _udpC.sendMessage(inputField.text);
+                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message: Controller.getName()+":"+inputField.text, type: "message" });
+                        _udpC.sendMessage(Controller.getName()+":"+inputField.text);
                         inputField.text = "";
                     }
                 }
@@ -139,9 +139,9 @@ ApplicationWindow{
                     var source=url.toString();
                     Controller.setSource(source);
                     if (url !== ""&& url !== undefined) {
-                        _messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:url.toString(),message:url.toString().split("/").pop(), type: "image" });
+                        _messageModel.append({timestamp: new Date().toLocaleTimeString() ,text:url.toString(),message:Controller.getName()+":"+url.toString().split("/").pop(), type: "image" });
                         _udpC.sendImage(url);
-                        _udpC.sendMessage(url.toString().split("/").pop());
+                        _udpC.sendMessage(Controller.getName()+":"+url.toString().split("/").pop());
                     }
                 }
             }
@@ -157,8 +157,8 @@ ApplicationWindow{
                 onAccepted: {
                     var url=fileDialog2.selectedFile
                     if (url !== ""&& url !== undefined) {
-                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:url.toString().split("/").pop(), type: "file" });
-                        _udpC.sendMessage(url.toString().split("/").pop());
+                        _messageModel.append({ timestamp: new Date().toLocaleTimeString() ,message:Controller.getName()+":"+url.toString().split("/").pop(), type: "file" });
+                        _udpC.sendMessage(Controller.getName()+":"+url.toString().split("/").pop());
                         //_tcpC.filetransmitC(url.toString());
                         //_tcpC.foldertransmitC(url.toString());
                     }

@@ -1,6 +1,6 @@
 #include "tcpclient.h"
-
-tcpClient::tcpClient(QString file_path, QObject *parent)
+//建立连接
+TcpClient::TcpClient(QObject *parent)
     : QObject(parent)
 {
     _socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -13,19 +13,12 @@ tcpClient::tcpClient(QString file_path, QObject *parent)
     memset(&_addr, 0, sizeof(_addr));
     _addr->sin_family = PF_INET;
     _addr->sin_addr.s_addr = inet_addr("127.0.0.1");
-    _addr->sin_port = htons(PORT);
+    _addr->sin_port = htons(PORT1);
 
     ::connect(_socketfd, (struct sockaddr *) addrs, sizeof(addrs));
-    switchfile(file_path);
-    if (_flag == 1) {
-        foldertransmitC(file_path);
-    }
-    if (_flag == 2) {
-        filetransmitC(file_path);
-    }
 }
-
-void tcpClient::foldertransmitC(QString file_path)
+//文件夹传输
+void TcpClient::foldertransmitC(QString file_path)
 {
     DIR *pD;
     struct dirent *ptr;
@@ -45,8 +38,8 @@ void tcpClient::foldertransmitC(QString file_path)
     qDebug() << "foldertransmitC  sucess";
     return;
 }
-
-void tcpClient::filetransmitC(QString file_path)
+//文件传输
+void TcpClient::filetransmitC(QString file_path)
 {
     char buf[BUF_SIZE] = {0};
     char *ch;
@@ -72,8 +65,8 @@ void tcpClient::filetransmitC(QString file_path)
     }
     qDebug() << "filetransmitC  sucess";
 }
-
-int tcpClient::filetype(QString file_path)
+//判断文件类型
+int TcpClient::filetype(QString file_path)
 {
     struct stat buf;
     int result;
@@ -94,8 +87,8 @@ int tcpClient::filetype(QString file_path)
     }
     return 1;
 }
-
-int tcpClient::switchfile(QString file_path)
+//置flag,如文件夹则置1，文件则2
+int TcpClient::switchfile(QString file_path)
 {
     int file_type;
     file_type = filetype(file_path);
@@ -110,5 +103,14 @@ int tcpClient::switchfile(QString file_path)
         qDebug() << "file type error";
     }
 }
-
-void tcpClient::switchflag(QString file_path) {}
+//获得文件类型后决定使用哪个类型函数
+void TcpClient::switchflag(QString file_path)
+{
+    switchfile(file_path);
+    if (_flag == 1) {
+        foldertransmitC(file_path);
+    }
+    if (_flag == 2) {
+        filetransmitC(file_path);
+    }
+}

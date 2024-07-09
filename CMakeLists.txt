@@ -34,10 +34,12 @@ qt_add_qml_module(
   udpClient.cpp
   SOURCES
   udpClient.h
+  SOURCES
+  tcpclient.cpp
+  SOURCES
+  tcpclient.h
   RESOURCES
-  E9CA77703A6BDDB095B0CB47EF494A20.jpg
-  SOURCES tcpclient.cpp
-  SOURCES tcpclient.h)
+  E9CA77703A6BDDB095B0CB47EF494A20.jpg)
 
 target_compile_features(appII PRIVATE cxx_std_20)
 
